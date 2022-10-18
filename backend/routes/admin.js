@@ -136,12 +136,13 @@ router.post("/admin/signup", jsonParser, async (req, res) => {
 });
 
 router.post(
-  "/admin/flight/uploaddetails",
+  "/admin/flight/uploaddetails/:email",
   adminAuth,
   jsonParser,
   async (req, res) => {
-    let email = req.email;
-    const clientDetails = await Admin.findOne({ email });
+    let email = req.params.email;
+    console.log(email)
+    const clientDetails = await Admin.findOne({ email: email});
     if (!clientDetails) {
       res.status(500).json({
         status: "error",
@@ -246,7 +247,7 @@ router.post("/admin/flight/details", adminAuth, jsonParser, async (req, res) => 
 });
 
 router.post("/admin/flight/sales", adminAuth, jsonParser, async (req, res) => {
-  let email = req.email;
+  let email = req.body.email;
   let _id = req.body.flightid;
   try {
     let adminInfo = await Admin.findOne({ email });

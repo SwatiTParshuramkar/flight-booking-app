@@ -139,7 +139,7 @@ router.post("/user/signup", jsonParser, async (req, res) => {
 router.post("/user/flight/search", userAuth, jsonParser, async (req, res) => {
   let { from, to, date } = req.body;
   try {
-    const flightList = await Flight.find({ arrival: from, destiny: to, date });
+    const flightList = await Flight.find({ arrival: from, destiny: to, date:date });
     if (flightList.length == 0) {
       res.status(500).json({
         status: "error",
@@ -164,15 +164,16 @@ router.post("/user/flight/search", userAuth, jsonParser, async (req, res) => {
 router.post("/user/flight/booktickets", userAuth, jsonParser, async (req, res) => {
   let email = req.email;
   const { id, seatNo, modeOfPayment, passengerName } = req.body;
-
   try {
     let ticketList = [];
+    // console.log("hello");
     let flightExist = await Flight.findOne({ _id: id });
     if (!flightExist) {
       res.status(500).json({
         status: "Error",
         result: "sorry no flights available on the given date",
       });
+      console.log(seatNo.length)
     } else if (seatNo.length != passengerName.length) {
       res.status(500).json({
         status: "Error",
@@ -272,7 +273,7 @@ router.post("/user/flight/details", userAuth, jsonParser, async (req, res) => {
 });
 
 router.get("/user/ticket", userAuth, jsonParser, async (req, res) => {
-  let email = req.email;
+  let email = req.params.email;
   try {
     const tickets = await Ticket.find({ customerEmail: email });
     res.json({
